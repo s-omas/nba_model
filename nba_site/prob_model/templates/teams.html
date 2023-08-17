@@ -6,7 +6,8 @@
 <h2>Team List</h2>
 <ul>
     {% for team in teams %}
-        <li>{{ team.team_name }}</li>
+        <li>{{ team.team_name }}<img src="{{ team.team_logo }}" alt="Small Image" class="img-thumbnail img-fluid" style="max-width: 100px;"></li> 
+        
     {% endfor %}
 </ul>
 {% endblock %}

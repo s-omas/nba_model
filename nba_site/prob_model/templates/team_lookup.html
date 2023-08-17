@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ team.team_logo }}" alt="{{ team.team_name }} Logo" class="img-fluid">
+        </div>
+        <div class="col-md-8">
+            <h2>Team Information</h2>
+            <p><strong>Team Name:</strong> {{ team.team_name }}</p>
+            <!-- Display other team details as needed -->
+        </div>
+    </div>
+</div>
+{% endblock %}

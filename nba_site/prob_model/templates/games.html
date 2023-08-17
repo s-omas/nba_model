@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Game Schedule</h2>
+    <div class="row">
+        {% for game in games %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="/team_lookup?id={{game.home_team.team_id}}">{{ game.home_team.team_name }} </a>vs. <a href="/team_lookup?id={{game.away_team.team_id}}">{{ game.away_team.team_name }}</a></h5>
+                    <p class="card-text"><strong>Home Team:</strong> {{ game.home_team.team_name }}</p>
+                    <p class="card-text"><strong>Away Team:</strong> {{ game.away_team.team_name }}</p>
+                    <p class="card-text"><strong>Date:</strong> {{ game.date }}</p>
+                    <p class="card-text"><strong>Location:</strong> {{ game.location }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
