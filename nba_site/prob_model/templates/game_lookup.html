@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ game.home_team.team_name }} vs. {{ game.away_team.team_name }}</h2>
+    <h3><strong> {{ game.date }}</strong></h3>
+    <p><strong>Location:</strong> {{ game.location }}</p>
+
+    {% if game.isCompleted %}
+    <h4>Result</h4>
+    <p><strong>Winner:</strong> {{ game.result.winner.team_name }}</p>
+    <p><strong>Loser:</strong> {{ game.result.loser.team_name }}</p>
+    <p><strong>Winner Score:</strong> {{ game.result.winner_score }}</p>
+    <p><strong>Loser Score:</strong> {{ game.result.loser_score }}</p>
+    {% endif %}
+
+    {% if game.prediction %}
+    <h4>Prediction</h4>
+    <p><strong>Expected Winner:</strong> {{ game.prediction.expected_winner.team_name }}</p>
+    <p><strong>Expected Loser:</strong> {{ game.prediction.expected_loser.team_name }}</p>
+    <p><strong>Winner Percentage:</strong> {{ game.prediction.winner_pct }}</p>
+    <p><strong>Loser Percentage:</strong> {{ game.prediction.loser_pct }}</p>
+    {% endif %}
+</div>
+{% endblock %}

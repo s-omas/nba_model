@@ -7,9 +7,26 @@
             <img src="{{ team.team_logo }}" alt="{{ team.team_name }} Logo" class="img-fluid">
         </div>
         <div class="col-md-8">
-            <h2>Team Information</h2>
-            <p><strong>Team Name:</strong> {{ team.team_name }}</p>
-            <!-- Display other team details as needed -->
+            <h2>{{ team.team_name }}</h2>
+        </div>
+    </div>
+    <div class="row container mt-4">
+        <h2>All Games:</h2>
+        <div class="row">
+            {% for game in games %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {{ game.home_team.team_name }} vs. {{ game.away_team.team_name }}
+                        </h5>
+                        <p class="card-text"><strong>Date:</strong> {{ game.date }}</p>
+                        <p class="card-text"><strong>Location:</strong> {{ game.location }}</p>
+                        <!-- Display other game details as needed -->
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </div>
