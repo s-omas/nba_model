@@ -17,11 +17,10 @@
             <div class="col-md-4 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">
-                            {{ game.home_team.team_name }} vs. {{ game.away_team.team_name }}
-                        </h5>
+                        <h5 class="card-title"><a href="/team_lookup?id={{game.home_team.team_id}}">{{ game.home_team.team_name }} </a>vs. <a href="/team_lookup?id={{game.away_team.team_id}}">{{ game.away_team.team_name }}</a></h5>
                         <p class="card-text"><strong>Date:</strong> {{ game.date }}</p>
                         <p class="card-text"><strong>Location:</strong> {{ game.location }}</p>
+                        <a href="/game_lookup?id={{game.game_id}}">View Details</a>
                         <!-- Display other game details as needed -->
                     </div>
                 </div>

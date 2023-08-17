@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>{{ game.home_team.team_name }} vs. {{ game.away_team.team_name }}</h2>
+    <h2><a href="/team_lookup?id={{game.home_team.team_id}}">{{ game.home_team.team_name }} </a> vs. <a href="/team_lookup?id={{game.away_team.team_id}}">{{ game.away_team.team_name }}</a></h2>
     <h3><strong> {{ game.date }}</strong></h3>
     <p><strong>Location:</strong> {{ game.location }}</p>
 
