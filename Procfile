@@ -1,1 +1,1 @@
-web: gunicorn nbasite.wsgi
+web: gunicorn nba_site.wsgi
