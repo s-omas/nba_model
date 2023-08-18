@@ -20,6 +20,9 @@
     <p><strong>Expected Loser:</strong> {{ game.prediction.expected_loser.team_name }}</p>
     <p><strong>Winner Percentage:</strong> {{ game.prediction.winner_pct }}</p>
     <p><strong>Loser Percentage:</strong> {{ game.prediction.loser_pct }}</p>
+    <p><strong>{{ game.home_team.team_name }} rating:</strong> {{ game.prediction.home_team_rating }}</p>
+    <p><strong>{{ game.away_team.team_name }} rating:</strong> {{ game.prediction.away_team_rating }}</p>
+
     {% endif %}
 </div>
 {% endblock %}

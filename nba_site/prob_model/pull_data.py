@@ -1,14 +1,15 @@
 import requests
 import os
 from datetime import datetime
-from prob_model.models import Team, Game, Schedule, Result
+from prob_model.models import Team, Game, Schedule, Result, Sim
+from .stats import update_predictions, update_sim
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(base_dir, "key.txt")
 with open(file_path, 'r') as file:
     k = file.read()
 
-testdate = "2022-9-15"
+testdate = "2022-09-15"
 test_datetime = datetime.strptime(testdate, "%Y-%m-%d")
 season = "2022"
 
@@ -35,9 +36,16 @@ def get_teams():
             team = new_team,
             name = r['team']['name'] + " Schedule"
         )
+        #add new sim for team
+        new_sim = Sim(
+            team = new_team,
+            rating = 1000,
+            variance = 100
+        )
         #save
         new_team.save()
         new_schedule.save()
+        new_sim.save()
         print('saved' + r['team']['name'])
     get_games()
 
@@ -105,7 +113,7 @@ def get_games():
 
 #code to update the database daily with yesterdays results
 def update_day():
-    current_date = "2022-10-02"
+    current_date = "2022-10-03"
     print("getting data for " + current_date + "...")
     url = "https://api-nba-v1.p.rapidapi.com/games"
     querystring = {"date": current_date}
@@ -140,8 +148,38 @@ def update_day():
             g.result = result
             g.save()
             print('succesfully updated game id: ' + str(game['id']))
+            ##call update sim function here:
+            update_sim(g)
+            ##
         except:
             print("Game does not exist in system")
     print('...done')
+    #predictions for next day
+    tomorrow = "2022-10-04"
+    print("making predictions for " + tomorrow + "...")
+    url = "https://api-nba-v1.p.rapidapi.com/games"
+    querystring = {"date": tomorrow}
+    headers = {
+	    "X-RapidAPI-Key": k,
+	    "X-RapidAPI-Host": "api-nba-v1.p.rapidapi.com"
+    }
+    response = requests.get(url, headers=headers, params=querystring)
+    response = response.json()['response']
+    gamelist = []
+    for game in response:
+        try:
+            #find game in database
+            g = Game.objects.get(game_id=game['id'])
+            gamelist.append(g)
+        except:
+            print("Game does not exist in system")
+    update_predictions(gamelist)
+    print("... done updating")
+
+
+
+
+
+
     
         
