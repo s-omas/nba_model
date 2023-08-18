@@ -8,11 +8,11 @@ file_path = os.path.join(base_dir, "key.txt")
 with open(file_path, 'r') as file:
     k = file.read()
 
-testdate = "2022-10-15"
+testdate = "2022-9-15"
 test_datetime = datetime.strptime(testdate, "%Y-%m-%d")
 season = "2022"
 
-
+#initial team and schedule loading
 def get_teams():
     url = "https://api-nba-v1.p.rapidapi.com/standings"
     querystring = {"league":"standard","season":"2022"}
@@ -41,7 +41,7 @@ def get_teams():
         print('saved' + r['team']['name'])
     get_games()
 
-
+#initial games loading
 def get_games():
     url = "https://api-nba-v1.p.rapidapi.com/games"
     querystring = {"season": season}
@@ -102,4 +102,46 @@ def get_games():
             away_sched.save()
         except:
             print("Game Failed " + g['teams']['home']['name'] + " v " + g['teams']['visitors']['name'])
+
+#code to update the database daily with yesterdays results
+def update_day():
+    current_date = "2022-10-02"
+    print("getting data for " + current_date + "...")
+    url = "https://api-nba-v1.p.rapidapi.com/games"
+    querystring = {"date": current_date}
+    headers = {
+	    "X-RapidAPI-Key": k,
+	    "X-RapidAPI-Host": "api-nba-v1.p.rapidapi.com"
+    }
+    response = requests.get(url, headers=headers, params=querystring)
+    response = response.json()['response']
+    for game in response:
+        try:
+            #find game in database
+            g = Game.objects.get(game_id=game['id'])
+            if game['scores']['visitors']['points'] > game['scores']['home']['points']:
+                winner = g.away_team
+                winner_score = game['scores']['visitors']['points']
+                loser = g.home_team
+                loser_score = game['scores']['home']['points']
+            else:
+                winner = g.home_team
+                winner_score = game['scores']['home']['points']
+                loser = g.away_team
+                loser_score = game['scores']['visitors']['points']
+            result = Result(
+                winner = winner,
+                loser = loser,
+                winner_score = winner_score,
+                loser_score = loser_score
+                )
+            result.save()
+            g.isCompleted = True
+            g.result = result
+            g.save()
+            print('succesfully updated game id: ' + str(game['id']))
+        except:
+            print("Game does not exist in system")
+    print('...done')
+    
         
