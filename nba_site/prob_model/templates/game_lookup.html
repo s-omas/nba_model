@@ -7,11 +7,11 @@
     <p><strong>Location:</strong> {{ game.location }}</p>
 
     {% if game.isCompleted %}
-    <h4>Result</h4>
-    <p><strong>Winner:</strong> {{ game.result.winner.team_name }}</p>
-    <p><strong>Loser:</strong> {{ game.result.loser.team_name }}</p>
-    <p><strong>Winner Score:</strong> {{ game.result.winner_score }}</p>
-    <p><strong>Loser Score:</strong> {{ game.result.loser_score }}</p>
+    <h4>Result:</h4>
+    <p>
+        <strong> {{ game.result.winner.team_name }} {{ game.result.winner_score }} - </strong> 
+        {{ game.result.loser.team_name }} {{ game.result.loser_score }}
+    </p>
     {% endif %}
 
     {% if game.prediction %}

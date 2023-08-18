@@ -9,7 +9,9 @@ from django.shortcuts import render
 
 
 def index(request):
+    #call update function for testing
     update_day()
+    ###
     return render(request, 'index.html', { 'all_teams': Team.objects.all()})
 
 def teams(request):
