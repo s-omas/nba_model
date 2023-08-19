@@ -10,7 +10,7 @@ from django.shortcuts import render
 
 def index(request):
     #call update function for testing
-    update_day()
+    ##update_day()
     ###
     return render(request, 'index.html', { 'all_teams': Team.objects.all()})
 
@@ -18,7 +18,7 @@ def teams(request):
     return render(request, 'teams.html',  {'teams': Team.objects.all()})
 
 def games(request):
-    return render(request, 'games.html',  {'games': Game.objects.all(), 'all_teams': Team.objects.all()})
+    return render(request, 'games.html',  {'games': Game.objects.filter(prediction__isnull=False), 'all_teams': Team.objects.all()})
 
 def team_lookup(request):
     id = request.GET.get('id')
