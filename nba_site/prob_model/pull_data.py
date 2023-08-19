@@ -1,13 +1,8 @@
-import requests
 import os
 from datetime import datetime
 from prob_model.models import Team, Game, Schedule, Result, Sim
 from .stats import update_predictions, update_sim
-
-base_dir = os.path.dirname(os.path.abspath(__file__))
-file_path = os.path.join(base_dir, "key.txt")
-with open(file_path, 'r') as file:
-    k = file.read()
+from .apiget import api_get_standings, api_get_games, api_get_games_on_date
 
 testdate = "2022-09-15"
 test_datetime = datetime.strptime(testdate, "%Y-%m-%d")
@@ -15,14 +10,8 @@ season = "2022"
 
 #initial team and schedule loading
 def get_teams():
-    url = "https://api-nba-v1.p.rapidapi.com/standings"
-    querystring = {"league":"standard","season":"2022"}
-    headers = {
-        "X-RapidAPI-Key": k,
-        "X-RapidAPI-Host": "api-nba-v1.p.rapidapi.com"
-    }
-    response = requests.get(url, headers=headers, params=querystring)
-    res = response.json()['response']
+    response = api_get_standings(season)
+    res = response['response']
     
     for r in res:
         #add new team
@@ -51,14 +40,8 @@ def get_teams():
 
 #initial games loading
 def get_games():
-    url = "https://api-nba-v1.p.rapidapi.com/games"
-    querystring = {"season": season}
-    headers = {
-	    "X-RapidAPI-Key": k,
-	    "X-RapidAPI-Host": "api-nba-v1.p.rapidapi.com"
-    }
-    response = requests.get(url, headers=headers, params=querystring)
-    response = response.json()['response']
+    response = api_get_games(season)
+    response = response['response']
     for g in response:
         try:
             home_id = g['teams']['home']['id']
@@ -114,15 +97,8 @@ def get_games():
 #code to update the database daily with yesterdays results
 def update_day():
     current_date = "2022-10-10"
-    print("getting data for " + current_date + "...")
-    url = "https://api-nba-v1.p.rapidapi.com/games"
-    querystring = {"date": current_date}
-    headers = {
-	    "X-RapidAPI-Key": k,
-	    "X-RapidAPI-Host": "api-nba-v1.p.rapidapi.com"
-    }
-    response = requests.get(url, headers=headers, params=querystring)
-    response = response.json()['response']
+    response = api_get_games_on_date(current_date)
+    response = response['response']
     for game in response:
         try:
             #find game in database
@@ -157,14 +133,8 @@ def update_day():
     #predictions for next day
     tomorrow = "2022-10-11"
     print("making predictions for " + tomorrow + "...")
-    url = "https://api-nba-v1.p.rapidapi.com/games"
-    querystring = {"date": tomorrow}
-    headers = {
-	    "X-RapidAPI-Key": k,
-	    "X-RapidAPI-Host": "api-nba-v1.p.rapidapi.com"
-    }
-    response = requests.get(url, headers=headers, params=querystring)
-    response = response.json()['response']
+    response = api_get_games_on_date(tomorrow)
+    response = response['response']
     gamelist = []
     for game in response:
         try:
