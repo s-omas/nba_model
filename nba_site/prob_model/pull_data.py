@@ -176,15 +176,17 @@ def update_day(today, tomorrow):
     update_predictions(gamelist)
     print("... done updating")
 
-
-def test_2022():
-    #clean db
+def clean_db():
     Game.objects.all().delete()
     Schedule.objects.all().delete()
     Team.objects.all().delete()
     Prediction.objects.all().delete()
     Result.objects.all().delete()
     Sim.objects.all().delete()
+
+
+def test_2022():
+    clean_db()
 
     start_date = datetime(2022, 9, 29)
     end_date = datetime(2023, 6, 13)
