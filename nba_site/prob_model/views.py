@@ -9,9 +9,9 @@ from django.shortcuts import render
 
 
 def index(request):
-    #call update function for testing
-    ##update_day()
-    ###
+    # call update function for testing
+    #update_day()
+    # ##
     return render(request, 'index.html', { 'all_teams': Team.objects.all()})
 
 def teams(request):
@@ -31,3 +31,7 @@ def game_lookup(request):
     id = request.GET.get('id')
     game = Game.objects.get(game_id=id)
     return render(request, 'game_lookup.html', {'game': game, 'all_teams': Team.objects.all()})
+
+def test(request):
+    test_2022()
+    return render(request, 'teams.html',  {'teams': Team.objects.all()})

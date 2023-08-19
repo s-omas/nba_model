@@ -1,6 +1,6 @@
 import os
-from datetime import datetime
-from prob_model.models import Team, Game, Schedule, Result, Sim
+from datetime import datetime, timedelta
+from prob_model.models import Team, Game, Schedule, Result, Sim, Prediction
 from .stats import update_predictions, update_sim
 from .apiget import api_get_standings, api_get_games, api_get_games_on_date
 
@@ -11,6 +11,7 @@ season = "2022"
 #initial team and schedule loading
 def get_teams():
     response = api_get_standings(season)
+    print(response)
     res = response['response']
     
     for r in res:
@@ -20,6 +21,7 @@ def get_teams():
             team_id = r['team']['id'],
             team_logo = r['team']['logo']
             )
+        print('here2')
         #add new schedule for team
         new_schedule = Schedule(
             team = new_team,
@@ -31,6 +33,7 @@ def get_teams():
             rating = 1000,
             variance = 100
         )
+        print('here1')
         #save
         new_team.save()
         new_schedule.save()
@@ -95,9 +98,9 @@ def get_games():
             print("Game Failed " + g['teams']['home']['name'] + " v " + g['teams']['visitors']['name'])
 
 #code to update the database daily with yesterdays results
-def update_day():
-    current_date = "2022-10-10"
-    response = api_get_games_on_date(current_date)
+def update_day(today, tomorrow):
+    # current_date = "2022-10-10"
+    response = api_get_games_on_date(today)
     response = response['response']
     for game in response:
         try:
@@ -128,10 +131,10 @@ def update_day():
             update_sim(g)
             ##
         except:
-            print("Game does not exist in system")
+            print("Game does not exist in system ")
     print('...done')
     #predictions for next day
-    tomorrow = "2022-10-11"
+    # tomorrow = "2022-10-11"
     print("making predictions for " + tomorrow + "...")
     response = api_get_games_on_date(tomorrow)
     response = response['response']
@@ -142,9 +145,65 @@ def update_day():
             g = Game.objects.get(game_id=game['id'])
             gamelist.append(g)
         except:
-            print("Game does not exist in system")
+            print("Game does not exist in system... trying to add")
+            try:
+                #try to create new game
+                home_id = game['teams']['home']['id']
+                away_id = game['teams']['visitors']['id']
+                home = Team.objects.filter(team_id=home_id)[0]
+                away = Team.objects.filter(team_id=away_id)[0]
+                newgame = Game(
+                    game_id = game['id'],
+                    home_team = home,
+                    away_team = away,
+                    date = game['date']['start'],
+                    location = game['arena']['name'],
+                    isCompleted = False,
+                    prediction = None,
+                    result = None
+                )
+                newgame.save()
+                gamelist.append(newgame)
+                #add new game to schedules
+                home_sched = Schedule.objects.filter(team=home)[0]
+                away_sched = Schedule.objects.filter(team=home)[0]
+                home_sched.games.add(newgame)
+                away_sched.games.add(newgame)
+                home_sched.save()
+                away_sched.save()
+            except:
+                print('adding failed')
     update_predictions(gamelist)
     print("... done updating")
+
+
+def test_2022():
+    #clean db
+    Game.objects.all().delete()
+    Schedule.objects.all().delete()
+    Team.objects.all().delete()
+    Prediction.objects.all().delete()
+    Result.objects.all().delete()
+    Sim.objects.all().delete()
+
+    start_date = datetime(2022, 9, 29)
+    end_date = datetime(2023, 6, 13)
+    day_increment = timedelta(days=1)
+
+    current_date = start_date
+    date_list = []
+
+    while current_date <= end_date:
+        date_list.append(str(current_date.strftime('%Y-%m-%d')))
+        current_date += day_increment
+
+    get_teams()
+    
+    for i in range(len(date_list)):
+        try:
+            update_day(date_list[i], date_list[i+1])
+        except:
+            print("last day")
 
 
 
