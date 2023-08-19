@@ -5,7 +5,7 @@ import json
 base_dir = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(base_dir, "key.txt")
 with open(file_path, 'r') as file:
-    k = str(file.read())
+    k = str(file.read()).strip()
 
 
 def api_get(url, querystring):
