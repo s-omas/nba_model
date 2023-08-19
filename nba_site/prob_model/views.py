@@ -24,7 +24,7 @@ def team_lookup(request):
     id = request.GET.get('id')
     team = Team.objects.get(team_id=id)
     schedule = Schedule.objects.get(team=team)
-    games = schedule.games.all()  # Retrieve associated games
+    games = schedule.games.filter(prediction__isnull=False)  # Retrieve associated games
     return render(request, 'team_lookup.html', {'team': team, 'games': games, 'all_teams': Team.objects.all()})
 
 def game_lookup(request):
