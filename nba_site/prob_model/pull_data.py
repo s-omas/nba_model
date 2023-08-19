@@ -113,7 +113,7 @@ def get_games():
 
 #code to update the database daily with yesterdays results
 def update_day():
-    current_date = "2022-10-03"
+    current_date = "2022-10-10"
     print("getting data for " + current_date + "...")
     url = "https://api-nba-v1.p.rapidapi.com/games"
     querystring = {"date": current_date}
@@ -155,7 +155,7 @@ def update_day():
             print("Game does not exist in system")
     print('...done')
     #predictions for next day
-    tomorrow = "2022-10-04"
+    tomorrow = "2022-10-11"
     print("making predictions for " + tomorrow + "...")
     url = "https://api-nba-v1.p.rapidapi.com/games"
     querystring = {"date": tomorrow}

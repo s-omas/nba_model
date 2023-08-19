@@ -61,8 +61,8 @@ def update_predictions(games_list):
             g.save()
 
 def update_sim(game):
-    k = 20 #rating change factor
-    m = 5 #var change factor
+    k = 50 #rating change factor
+    m = 10 #var change factor
 
     prediction = game.prediction
     result = game.result
