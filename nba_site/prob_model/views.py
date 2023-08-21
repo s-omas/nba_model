@@ -10,7 +10,7 @@ from django.shortcuts import render
 
 def index(request):
     # call update function for testing
-    update_day("2022-10-17","2022-10-18")
+    #update_day("2022-11-14","2022-11-15")
     # ##
     return render(request, 'index.html', { 'all_teams': Team.objects.all()})
 
