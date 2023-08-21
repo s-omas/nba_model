@@ -5,14 +5,14 @@ from .models import Team, Game, Schedule
 # Create your views here.
 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 def index(request):
     # call update function for testing
     #update_day("2022-11-14","2022-11-15")
     # ##
-    return render(request, 'index.html', { 'all_teams': Team.objects.all()})
+    return redirect("/games")
 
 def teams(request):
     return render(request, 'teams.html',  {'teams': Team.objects.all()})
@@ -43,8 +43,8 @@ def game_lookup(request):
     return render(request, 'game_lookup.html', {'game': game, 'all_teams': Team.objects.all()})
 
 def test(request):
-    test_2022()
-    return render(request, 'teams.html',  {'teams': Team.objects.all()})
+    #test_2022()
+    return redirect("/")
 
 def model_info(request):
     rating_dict = {}
