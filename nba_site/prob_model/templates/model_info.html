@@ -29,6 +29,7 @@
                     label: team,
                     data: rating_dict[team],
                     fill: false,
+                    
                 });
             }
             
@@ -50,6 +51,64 @@
         </script>
     </div>
     <div class="row">
-
+        <h1>Team rating vs variance</h1>
+        <canvas id="scatterChart"></canvas>
+        <script>
+            const ctx2 = document.getElementById('scatterChart').getContext('2d');
+            const sims_dict = {{ sims_dict|safe }};
+            
+            const data = [];
+            
+            // Extract data from sims_dict and create dataset
+            for (const team in sims_dict) {
+                data.push({
+                    x: sims_dict[team].rating,
+                    y: sims_dict[team].variance,
+                    label: team,
+                });
+            }
+            
+            const scatterChart = new Chart(ctx2, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        data: data,
+                        pointBackgroundColor: 'blue',
+                        pointRadius: 10,
+                        label: 'Variance vs. Rating',
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            title: {
+                                display: true,
+                                text: 'Rating',
+                            },
+                        },
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Variance',
+                            },
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const team = context.dataset.data[context.dataIndex].label;
+                                    return `${team}: Rating ${context.parsed.x}, Variance ${context.parsed.y}`;
+                                },
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
     </div>
 {% endblock %}

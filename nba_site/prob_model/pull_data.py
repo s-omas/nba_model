@@ -5,8 +5,8 @@ from .stats import update_predictions, update_sim
 from .apiget import api_get_standings, api_get_games, api_get_games_on_date
 import time
 
-testdate = "2022-09-15"
-test_datetime = datetime.strptime(testdate, "%Y-%m-%d")
+testdate = "2022-10-18"
+season_start = datetime.strptime(testdate, "%Y-%m-%d")
 season = "2022"
 
 #initial team and schedule loading
@@ -54,47 +54,33 @@ def get_games():
             away_team = Team.objects.filter(team_id=away_id)[0]
             #create new game
             start = datetime.strptime(g['date']['start'], "%Y-%m-%dT%H:%M:%S.%fZ")
-            isCompleted = (start < test_datetime)
-            print(test_datetime, g['date']['start'])
-            print(isCompleted)
-            result = None
-            # #add results if applicable
-            if isCompleted:
-                if g['scores']['visitors']['points'] > g['scores']['home']['points']:
-                    winner = away_team
-                    winner_score = g['scores']['visitors']['points']
-                    loser = home_team
-                    loser_score = g['scores']['home']['points']
-                else:
-                    winner = home_team
-                    winner_score = g['scores']['home']['points']
-                    loser = away_team
-                    loser_score = g['scores']['visitors']['points']
-                result = Result(
-                    winner = winner,
-                    loser = loser,
-                    winner_score = winner_score,
-                    loser_score = loser_score
+            isPreSeason = (start < season_start)
+            print('start', start)
+            print('season_S', season_start)
+            if not isPreSeason:
+                result = None
+                # #add results if applicable
+
+                new_game = Game(
+                    game_id = g['id'],
+                    home_team = home_team,
+                    away_team = away_team,
+                    date = g['date']['start'],
+                    location = g['arena']['name'],
+                    isCompleted = False,
+                    prediction = None,
+                    result = result
                 )
-                result.save()
-            new_game = Game(
-                game_id = g['id'],
-                home_team = home_team,
-                away_team = away_team,
-                date = g['date']['start'],
-                location = g['arena']['name'],
-                isCompleted = isCompleted,
-                prediction = None,
-                result = result
-            )
-            new_game.save()
-            #add to both teams' schedule
-            home_sched = Schedule.objects.filter(team=home_team)[0]
-            away_sched = Schedule.objects.filter(team=away_team)[0]
-            home_sched.games.add(new_game)
-            away_sched.games.add(new_game)
-            home_sched.save()
-            away_sched.save()
+                new_game.save()
+                #add to both teams' schedule
+                home_sched = Schedule.objects.filter(team=home_team)[0]
+                away_sched = Schedule.objects.filter(team=away_team)[0]
+                home_sched.games.add(new_game)
+                away_sched.games.add(new_game)
+                home_sched.save()
+                away_sched.save()
+            else:
+                print('preseason')
         except:
             print("Game Failed " + g['teams']['home']['name'] + " v " + g['teams']['visitors']['name'])
 

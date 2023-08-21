@@ -10,7 +10,7 @@ from django.shortcuts import render
 
 def index(request):
     # call update function for testing
-    #update_day("2022-10-06","2022-10-07")
+    update_day("2022-10-17","2022-10-18")
     # ##
     return render(request, 'index.html', { 'all_teams': Team.objects.all()})
 
@@ -62,4 +62,13 @@ def model_info(request):
         rating_dict.update({team.team_name: rating_hist})
     rating_dict = str(rating_dict)
 
-    return render(request, 'model_info.html', {'rating_dict': rating_dict, 'all_teams': Team.objects.all()})
+    sims = Sim.objects.all()
+    sims_dict = {}
+    for s in sims:
+        name = s.team.team_name
+        rtg = s.rating
+        var = s.variance
+        sims_dict.update({name: {'variance': var, 'rating': rtg}})
+    sims_dict = str(sims_dict)
+
+    return render(request, 'model_info.html', {'rating_dict': rating_dict, 'sims_dict': sims_dict, 'all_teams': Team.objects.all()})
