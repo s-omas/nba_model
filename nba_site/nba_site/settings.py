@@ -28,7 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'stth11.pythonanywhere.com',
     '127.0.0.1',
-    'bballstat.com'
+    'www.bballstat.com'
 ]
 
 
