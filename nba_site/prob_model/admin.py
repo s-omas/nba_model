@@ -1,5 +1,5 @@
 from django.contrib import admin
-from prob_model.models import Team,Game,Schedule
+from prob_model.models import Team,Game,Schedule, Sim
 
 class TeamAdmin(admin.ModelAdmin):
     list_display = ('team_name', 'team_id')
@@ -25,3 +25,12 @@ class GameAdmin(admin.ModelAdmin):
     actions=[]
 
 admin.site.register(Game, GameAdmin)
+
+
+class SimAdmin(admin.ModelAdmin):
+    list_display = ['name', 'rating', 'variance']
+    def name(self, obj):
+        return obj.team.team_name
+    actions=[]
+
+admin.site.register(Sim, SimAdmin)

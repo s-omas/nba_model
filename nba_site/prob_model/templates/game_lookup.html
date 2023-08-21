@@ -6,22 +6,57 @@
     <h3><strong> {{ game.date }}</strong></h3>
     <p><strong>Location:</strong> {{ game.location }}</p>
 
-    {% if game.isCompleted %}
-    <h4>Result:</h4>
-    <p>
-        <strong> {{ game.result.winner.team_name }} {{ game.result.winner_score }} - </strong> 
-        {{ game.result.loser.team_name }} {{ game.result.loser_score }}
-    </p>
-    {% endif %}
+    <div class="row">
+        <div class="col-6">
+            {% if game.isCompleted %}
+            <h4>Result:</h4>
+            <p>
+                <strong> {{ game.result.winner.team_name }} {{ game.result.winner_score }} - </strong> 
+                {{ game.result.loser.team_name }} {{ game.result.loser_score }}
+            </p>
+            {% endif %}
 
-    {% if game.prediction %}
-    <h4>Prediction</h4>
-    <p><strong>Expected Winner:</strong> {{ game.prediction.expected_winner.team_name }}</p>
-    <p><strong>Expected Loser:</strong> {{ game.prediction.expected_loser.team_name }}</p>
-    <p><strong>Winner Percentage:</strong> {{ game.prediction.winner_pct }}</p>
-    <p><strong>Loser Percentage:</strong> {{ game.prediction.loser_pct }}</p>
-    <p><strong>{{ game.home_team.team_name }} rating:</strong> {{ game.prediction.home_team_rating }}</p>
-    <p><strong>{{ game.away_team.team_name }} rating:</strong> {{ game.prediction.away_team_rating }}</p>
+            {% if game.prediction %}
+            <h4>Prediction</h4>
+            <p><strong>Expected Winner:</strong> {{ game.prediction.expected_winner.team_name }}</p>
+            <p><strong>Expected Loser:</strong> {{ game.prediction.expected_loser.team_name }}</p>
+            <p><strong>Winner Percentage:</strong> {{ game.prediction.winner_pct }}</p>
+            <p><strong>Loser Percentage:</strong> {{ game.prediction.loser_pct }}</p>
+            <p><strong>{{ game.home_team.team_name }} rating:</strong> {{ game.prediction.home_team_rating }}</p>
+            <p><strong>{{ game.away_team.team_name }} rating:</strong> {{ game.prediction.away_team_rating }}</p>
+        </div>
+        <div class="col-6"><canvas id="predictionChart"></canvas></div>
+    </div>
+    <script>
+        // Get the canvas element
+        const ctx = document.getElementById('predictionChart').getContext('2d');
+        
+        // Sample data (replace this with your actual data)
+        const teamLabels = ['{{ game.prediction.expected_winner.team_name }}', '{{ game.prediction.expected_loser.team_name }}'];
+        const probabilities = [{{ game.prediction.winner_pct }}, {{ game.prediction.loser_pct }}];
+        
+        // Create the chart
+        const predictionChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: teamLabels,
+                datasets: [{
+                    label: 'Probability of Winning',
+                    data: probabilities,
+                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)'],
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                    }
+                }
+            }
+        });
+    </script>
 
     {% endif %}
 </div>

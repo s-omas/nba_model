@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from prob_model.models import Team, Game, Schedule, Result, Sim, Prediction
 from .stats import update_predictions, update_sim
 from .apiget import api_get_standings, api_get_games, api_get_games_on_date
+import time
 
 testdate = "2022-09-15"
 test_datetime = datetime.strptime(testdate, "%Y-%m-%d")
@@ -202,6 +203,7 @@ def test_2022():
     get_teams()
     
     for i in range(len(date_list)):
+        time.sleep(250)
         try:
             update_day(date_list[i], date_list[i+1])
         except:

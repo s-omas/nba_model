@@ -1,0 +1,55 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="row">
+        <h1>Team Rating History</h1>
+        <!-- Create a canvas for the Chart.js plot -->
+        <canvas id="lineChart"></canvas>
+        <script>
+            const ctx = document.getElementById('lineChart').getContext('2d');
+            const rating_dict = {{ rating_dict|safe }};
+            
+            const labels = [];
+            const datasets = [];
+            
+            // Get the maximum number of games played by any team
+            let maxGames = 0;
+            for (const team in rating_dict) {
+                maxGames = Math.max(maxGames, rating_dict[team].length);
+            }
+            
+            // Generate labels for each game
+            for (let i = 1; i <= maxGames; i++) {
+                labels.push(`Game ${i}`);
+            }
+            
+            // Extract data from rating_dict and create datasets
+            for (const team in rating_dict) {
+                datasets.push({
+                    label: team,
+                    data: rating_dict[team],
+                    fill: false,
+                });
+            }
+            
+            const lineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets,
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+            });
+        </script>
+    </div>
+    <div class="row">
+
+    </div>
+{% endblock %}

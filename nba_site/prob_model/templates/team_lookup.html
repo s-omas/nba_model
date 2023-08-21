@@ -2,12 +2,40 @@
 
 {% block content %}
 <div class="container mt-4">
+    <h2>{{ team.team_name }}</h2>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-3">
             <img src="{{ team.team_logo }}" alt="{{ team.team_name }} Logo" class="img-fluid">
         </div>
-        <div class="col-md-8">
-            <h2>{{ team.team_name }}</h2>
+        <div class="col-6">
+            <canvas id="lineChart"></canvas>
+            <script>
+                // Sample rating history data (replace with your actual data)
+                const rating_history = JSON.parse('{{ rating_history|safe }}');
+
+                // Get the canvas element
+                const ctx = document.getElementById('lineChart').getContext('2d');
+
+                // Create the line chart
+                const lineChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: rating_history.map((_, index) => `Game ${index + 1}`),
+                        datasets: [{
+                            label: 'Elo Rating',
+                            data: rating_history
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                            }
+                        }
+                    }
+                });
+            </script>
         </div>
     </div>
     <div class="row container mt-4">

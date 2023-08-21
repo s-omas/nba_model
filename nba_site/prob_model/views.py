@@ -10,7 +10,7 @@ from django.shortcuts import render
 
 def index(request):
     # call update function for testing
-    #update_day()
+    #update_day("2022-10-06","2022-10-07")
     # ##
     return render(request, 'index.html', { 'all_teams': Team.objects.all()})
 
@@ -24,8 +24,18 @@ def team_lookup(request):
     id = request.GET.get('id')
     team = Team.objects.get(team_id=id)
     schedule = Schedule.objects.get(team=team)
+
     games = schedule.games.filter(prediction__isnull=False)  # Retrieve associated games
-    return render(request, 'team_lookup.html', {'team': team, 'games': games, 'all_teams': Team.objects.all()})
+
+    rating_hist = []
+    for game in games:
+        if team == game.home_team:
+            rating_hist.append(game.prediction.home_team_rating)
+        else:
+            rating_hist.append(game.prediction.away_team_rating)
+
+
+    return render(request, 'team_lookup.html', {'rating_history':rating_hist, 'team': team, 'games': games, 'all_teams': Team.objects.all()})
 
 def game_lookup(request):
     id = request.GET.get('id')
@@ -35,3 +45,21 @@ def game_lookup(request):
 def test(request):
     test_2022()
     return render(request, 'teams.html',  {'teams': Team.objects.all()})
+
+def model_info(request):
+    rating_dict = {}
+    all_teams = Team.objects.all()
+    for team in all_teams:
+        schedule = Schedule.objects.get(team=team)
+        games = schedule.games.filter(prediction__isnull=False)  # Retrieve associated games
+
+        rating_hist = []
+        for game in games:
+            if team == game.home_team:
+                rating_hist.append(game.prediction.home_team_rating)
+            else:
+                rating_hist.append(game.prediction.away_team_rating)
+        rating_dict.update({team.team_name: rating_hist})
+    rating_dict = str(rating_dict)
+
+    return render(request, 'model_info.html', {'rating_dict': rating_dict, 'all_teams': Team.objects.all()})

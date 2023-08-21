@@ -27,7 +27,7 @@ def api_get(url, querystring):
 
 def api_get_standings(season):
     url = "https://api-nba-v1.p.rapidapi.com/standings"
-    querystring = {"season":season}
+    querystring = {"season":season, "league":"standard"}
     data = api_get(url, querystring)
     return data.json()
 
