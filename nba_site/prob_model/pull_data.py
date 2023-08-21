@@ -1,6 +1,7 @@
 import os
 from datetime import datetime, timedelta
 from prob_model.models import Team, Game, Schedule, Result, Sim, Prediction
+from django.db.models import Max
 from .stats import update_predictions, update_sim
 from .apiget import api_get_standings, api_get_games, api_get_games_on_date
 import time
@@ -196,7 +197,11 @@ def test_2022():
             print("last day")
 
 
-
+def get_relevant_games():
+    largest_game_id = Game.objects.filter(result__isnull=False).aggregate(Max('game_id'))['game_id__max']
+    #range size - number of completed and upcoming games to display
+    range_size = 10
+    return Game.objects.filter(game_id__range=(largest_game_id - range_size, largest_game_id + range_size))
 
 
 

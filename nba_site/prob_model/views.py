@@ -18,7 +18,7 @@ def teams(request):
     return render(request, 'teams.html',  {'teams': Team.objects.all()})
 
 def games(request):
-    return render(request, 'games.html',  {'games': Game.objects.filter(prediction__isnull=False), 'all_teams': Team.objects.all()})
+    return render(request, 'games.html',  {'games': get_relevant_games(), 'all_teams': Team.objects.all()})
 
 def team_lookup(request):
     id = request.GET.get('id')
