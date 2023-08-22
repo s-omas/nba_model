@@ -54,3 +54,8 @@ class GameSet(models.Model):
         game_to_remove = self.games.order_by('game_id').first()
         if game_to_remove:
             self.games.remove(game_to_remove)
+
+
+class MostRecentDay(models.Model):
+    rd_id = models.IntegerField(default=0)
+    day = models.IntegerField()

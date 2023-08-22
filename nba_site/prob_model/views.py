@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from .pull_data import *
 from .models import Team, Game, Schedule
+from django.contrib.admin.views.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -72,3 +75,20 @@ def model_info(request):
     sims_dict = str(sims_dict)
 
     return render(request, 'model_info.html', {'rating_dict': rating_dict, 'sims_dict': sims_dict, 'all_teams': Team.objects.all()})
+
+def user_is_admin(user):
+    return user.is_superuser
+
+@login_required
+@user_passes_test(user_is_admin)
+def admin_setup(request):
+    initial_setup()
+    day_setup()
+    return HttpResponse("Initial seaason setup completed.")
+
+
+@login_required
+@user_passes_test(user_is_admin)
+def admin_update(request):
+    day_setup()
+    return HttpResponse("Day update completed.")
