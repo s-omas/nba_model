@@ -60,6 +60,7 @@ def update_predictions(games_list):
             g.prediction = new
             g.save()
 
+
 def update_sim(game):
     k = 40 #rating change factor
     m = 10 #var change factor
