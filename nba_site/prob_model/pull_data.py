@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-from prob_model.models import Team, Game, Schedule, Result, Sim, Prediction
+from prob_model.models import Team, Game, Schedule, Result, Sim, Prediction, GameSet
 from django.db.models import Max
 from .stats import update_predictions, update_sim
 from .apiget import api_get_standings, api_get_games, api_get_games_on_date
@@ -87,7 +87,17 @@ def get_games():
 
 #code to update the database daily with yesterdays results
 def update_day(today, tomorrow):
-    # current_date = "2022-10-10"
+    #try to make a gameset or load existing gameset
+    try:
+        print("trying to find relevant gameset")
+        gs = GameSet.objects.get(name='relevant')
+        gs.games.clear()
+    except:
+        print('making gameset')
+        gs = GameSet(
+            name='relevant'
+        )
+
     response = api_get_games_on_date(today)
     response = response['response']
     for game in response:
@@ -114,6 +124,7 @@ def update_day(today, tomorrow):
             g.isCompleted = True
             g.result = result
             g.save()
+            gs.games.add(g)
             print('succesfully updated game id: ' + str(game['id']))
             ##call update sim function here:
             update_sim(g)
@@ -132,6 +143,7 @@ def update_day(today, tomorrow):
             #find game in database
             g = Game.objects.get(game_id=game['id'])
             gamelist.append(g)
+            gs.games.add(g)
         except:
             print("Game does not exist in system... trying to add")
             try:
@@ -159,9 +171,11 @@ def update_day(today, tomorrow):
                 away_sched.games.add(newgame)
                 home_sched.save()
                 away_sched.save()
+                gs.games.add(newgame)
             except:
                 print('adding failed')
     update_predictions(gamelist)
+    gs.save()
     print("... done updating")
 
 def clean_db():
@@ -198,12 +212,4 @@ def test_2022():
 
 
 def get_relevant_games():
-    largest_game_id = Game.objects.filter(result__isnull=False).aggregate(Max('game_id'))['game_id__max']
-    #range size - number of completed and upcoming games to display
-    range_size = 10
-    return Game.objects.filter(game_id__range=(largest_game_id - range_size, largest_game_id + range_size))
-
-
-
-    
-        
+    return GameSet.objects.get(name='relevant').games.all()

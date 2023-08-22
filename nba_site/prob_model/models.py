@@ -41,3 +41,16 @@ class Sim(models.Model):
     team = models.ForeignKey(Team, related_name="team_sim", on_delete=models.CASCADE)
     rating = models.FloatField(default=1000)
     variance = models.FloatField(default=100)
+
+class GameSet(models.Model):
+    name = models.CharField(max_length=20)
+    games = models.ManyToManyField(Game)
+
+    def rotate(self, new_game):
+        # Add the new game to the set
+        self.games.add(new_game)
+
+        # Determine the game with the highest game_id and remove it
+        game_to_remove = self.games.order_by('game_id').first()
+        if game_to_remove:
+            self.games.remove(game_to_remove)

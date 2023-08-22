@@ -1,0 +1,28 @@
+/* Font */
+/* body {
+    font-family: 'Your Preferred Font', sans-serif;
+} */
+
+/* Headings */
+h1, h2, h3 {
+    /* font-family: 'Your Preferred Heading Font', serif; */
+    color: #333; /* Your heading text color */
+}
+
+/* Background Color */
+.bg-light {
+    background-color: #ffbb00; /* Your preferred light background color */
+}
+
+/* Text Color */
+.text-muted {
+    color: #888; /* Your muted text color */
+}
+
+/* Custom Button Styles */
+.btn-custom {
+    background-color: #007bff; /* Your button background color */
+    color: #fff; /* Your button text color */
+    border: none;
+    /* Add more styling here */
+}
