@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect
 
 def index(request):
     # call update function for testing
-    update_day("2022-11-17","2022-11-18")
+    #update_day("2022-11-17","2022-11-18")
     # #
     return redirect("/games")
 
