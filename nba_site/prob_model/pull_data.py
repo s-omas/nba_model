@@ -24,31 +24,6 @@ def initial_setup():
     day = MostRecentDay(rd_id=0, day=0)
     day.save()
 
-    
-# def pull():
-#     rd = MostRecentDay.objects.get(rd_id=0)
-#     n = rd.day
-#     current_day_str = generate_date_string(n)
-#     next_day_str = generate_date_string(n+1)
-#     print(current_day_str, next_day_str)
-#     all_games = []
-#     # try:
-#     curr_res = api_get_games_on_date(current_day_str)['response']
-#     next_res = api_get_games_on_date(next_day_str)['response']
-#     all_games = curr_res + next_res
-#     all_games = sorted(all_games, key=lambda game: game['id'])
-#     # except:
-#     #     print("Games api request failed")
-#     for g in all_games:
-#         gamme_obj = day_game_update(g)
-#         gamme_obj.save()
-#     rd.day = n + 1
-#     rd.save()
-#     return
-
-
-
-# def predict():
 
 def pull():
     rd = MostRecentDay.objects.get(rd_id=0)
@@ -83,31 +58,6 @@ def predict():
     update_predictions([Game.objects.get(game_id=x['id']) for x in all_games])
     rd.day = n+1
     rd.save()
-
-
-
-def day_setup():
-    rd = MostRecentDay.objects.get(rd_id=0)
-    n = rd.day
-    prev_day_str = generate_date_string(n-1)
-    current_day_str = generate_date_string(n)
-    next_day_str = generate_date_string(n+1)
-    print(current_day_str, next_day_str)
-    all_games = []
-    try:
-        curr_res = api_get_games_on_date(current_day_str)['response']
-        #next_res = api_get_games_on_date(next_day_str)['response']
-        prev_res = api_get_games_on_date(prev_day_str)['response']
-        all_games = curr_res + prev_res
-        all_games = sorted(all_games, key=lambda game: game['id'])
-    except:
-        print("Games api request failed")
-    for g in all_games:
-        gamme_obj = day_game_update(g)
-        gamme_obj.save()
-    rd.day = n + 1
-    rd.save()
-    return
 
 
 def get_relevant_games():

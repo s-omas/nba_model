@@ -121,44 +121,6 @@ def add_game(game_res):
         print("game adding failed for game" + str(game_res['id']))
 
 
-# def add_results(game_dict):
-#     id = game_dict['id']
-#     try:
-#         print('looking for game: ' + str(id))
-#         game_record = Game.objects.get(game_id=id)
-#         gamestart = convert_to_eastern_time(game_res['date']['start'])
-#         #if game has happened
-#         if is_datetime_in_past(gamestart):
-#             prev_completed = game_record.isCompleted
-#             if not prev_completed:
-#                 if game_res['scores']['visitors']['points'] > game_res['scores']['home']['points']:
-#                     winner = game_record.away_team
-#                     winner_score = game_res['scores']['visitors']['points']
-#                     loser = game_record.home_team
-#                     loser_score = game_res['scores']['home']['points']
-#                 else:
-#                     winner = game_record.home_team
-#                     winner_score = game_res['scores']['home']['points']
-#                     loser = game_record.away_team
-#                     loser_score = game_res['scores']['visitors']['points']
-#                 result = Result(
-#                     winner = winner,
-#                     loser = loser,
-#                     winner_score = winner_score,
-#                     loser_score = loser_score
-#                     )
-#                 result.save()
-#                 game_record.isCompleted = True
-#                 game_record.result = result
-#                 game_record.save()
-#                 update_sim(game_record)
-#     except:
-#         print('game not found')
-
-
-# def 
-
-
 def day_game_update(game_res):
     id = game_res['id']
     try:
