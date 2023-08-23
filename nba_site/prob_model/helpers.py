@@ -1,12 +1,11 @@
-from datetime import datetime
 import pytz
 from dateutil import parser
 from prob_model.models import Team, Game, Schedule, Result, Sim, Prediction, GameSet, MostRecentDay
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from .stats import update_sim, make_prediction
 
 season_year = "2022"
-season_start_str = "2022-10-18"
+season_start_str = "2022-10-17"
 season_end_str = "2023-06-15"
 season_start = datetime.strptime(season_start_str, "%Y-%m-%d")
 season_end = datetime.strptime(season_end_str, "%Y-%m-%d")
@@ -39,7 +38,7 @@ def is_datetime_in_past(dt):
     # eastern_time = pytz.timezone('US/Eastern')
     # current_time = datetime.now(eastern_time)
 
-    target_time = datetime(2022, 10, 24, 4, 0) # use this for testing - start at seasonstart
+    target_time = datetime(2022, 10, 18, 4, 0) # use this for testing - start at seasonstart
 
     # Set the timezone to Eastern Time (US/Eastern)
     eastern_time = pytz.timezone('US/Eastern')
@@ -75,7 +74,7 @@ def add_team(team_response):
     new_sim = Sim(
         team = new_team,
         rating = 1000,
-        variance = 100
+        variance = 200
     )
     new_team.save()
     new_schedule.save()
@@ -122,6 +121,44 @@ def add_game(game_res):
         print("game adding failed for game" + str(game_res['id']))
 
 
+# def add_results(game_dict):
+#     id = game_dict['id']
+#     try:
+#         print('looking for game: ' + str(id))
+#         game_record = Game.objects.get(game_id=id)
+#         gamestart = convert_to_eastern_time(game_res['date']['start'])
+#         #if game has happened
+#         if is_datetime_in_past(gamestart):
+#             prev_completed = game_record.isCompleted
+#             if not prev_completed:
+#                 if game_res['scores']['visitors']['points'] > game_res['scores']['home']['points']:
+#                     winner = game_record.away_team
+#                     winner_score = game_res['scores']['visitors']['points']
+#                     loser = game_record.home_team
+#                     loser_score = game_res['scores']['home']['points']
+#                 else:
+#                     winner = game_record.home_team
+#                     winner_score = game_res['scores']['home']['points']
+#                     loser = game_record.away_team
+#                     loser_score = game_res['scores']['visitors']['points']
+#                 result = Result(
+#                     winner = winner,
+#                     loser = loser,
+#                     winner_score = winner_score,
+#                     loser_score = loser_score
+#                     )
+#                 result.save()
+#                 game_record.isCompleted = True
+#                 game_record.result = result
+#                 game_record.save()
+#                 update_sim(game_record)
+#     except:
+#         print('game not found')
+
+
+# def 
+
+
 def day_game_update(game_res):
     id = game_res['id']
     try:
@@ -131,6 +168,8 @@ def day_game_update(game_res):
         gamestart = convert_to_eastern_time(game_res['date']['start'])
         #if game has happened
         if is_datetime_in_past(gamestart):
+            # prev_completed = game_record.isCompleted
+            # if not prev_completed:
             if game_res['scores']['visitors']['points'] > game_res['scores']['home']['points']:
                 winner = game_record.away_team
                 winner_score = game_res['scores']['visitors']['points']
@@ -195,3 +234,9 @@ def day_game_update(game_res):
             print('adding failed')
     game_record.save()
     return game_record
+
+
+def is_before_8am(dt_str):
+    dt = datetime.fromisoformat(dt_str[:-1])
+    eight_am = time(8, 0, 0)
+    return dt.time() < eight_am

@@ -5,7 +5,7 @@ from django.db.models import Max
 from .apiget import api_get_standings, api_get_games, api_get_games_on_date
 import time
 from .helpers import *
-
+from .stats import update_predictions, update_sim
 
 def initial_setup():
     print("Starting inital setup: getting teams")
@@ -23,16 +23,70 @@ def initial_setup():
     #     print("Failed to load games into db")
     day = MostRecentDay(rd_id=0, day=0)
     day.save()
-    gs = GameSet(name='relevant')
-    gs.save()
-    #except:
-       # print("Failed to load teams into db")
+
     
+# def pull():
+#     rd = MostRecentDay.objects.get(rd_id=0)
+#     n = rd.day
+#     current_day_str = generate_date_string(n)
+#     next_day_str = generate_date_string(n+1)
+#     print(current_day_str, next_day_str)
+#     all_games = []
+#     # try:
+#     curr_res = api_get_games_on_date(current_day_str)['response']
+#     next_res = api_get_games_on_date(next_day_str)['response']
+#     all_games = curr_res + next_res
+#     all_games = sorted(all_games, key=lambda game: game['id'])
+#     # except:
+#     #     print("Games api request failed")
+#     for g in all_games:
+#         gamme_obj = day_game_update(g)
+#         gamme_obj.save()
+#     rd.day = n + 1
+#     rd.save()
+#     return
+
+
+
+# def predict():
+
+def pull():
+    rd = MostRecentDay.objects.get(rd_id=0)
+    n = rd.day
+    day_str = generate_date_string(n)
+    next_day_str = generate_date_string(n + 1)
+    #get from api
+    curr_res = api_get_games_on_date(day_str)['response']
+    next_res = api_get_games_on_date(next_day_str)['response']
+    #we only want games after 8am on curr, and before 8am on next (to account for time zone)
+    day_games = [x for x in curr_res if not is_before_8am(x['date']['start'])]
+    next_games = [x for x in next_res if is_before_8am(x['date']['start'])]
+    games = day_games + next_games
+    for g in games:
+        game_obj = Game.objects.get(game_id=g['id'])
+        game_obj.add_result(g)
+        update_sim(game_obj)
+
+
+def predict():
+    rd = MostRecentDay.objects.get(rd_id=0)
+    n = rd.day
+    next_day_str = generate_date_string(n+1)
+    second_day_str = generate_date_string(n+2)
+    #get from api
+    day1_games = api_get_games_on_date(next_day_str)['response']
+    day2_games = api_get_games_on_date(second_day_str)['response']
+    #we only want games after 8am on day1, before 8am on day2
+    day1 = [x for x in day1_games if not is_before_8am(x['date']['start'])]
+    day2 = [x for x in day2_games if is_before_8am(x['date']['start'])]
+    all_games = day1 + day2
+    update_predictions([Game.objects.get(game_id=x['id']) for x in all_games])
+    rd.day = n+1
+    rd.save()
+
+
 
 def day_setup():
-    gs = GameSet.objects.get(name='relevant')
-    gs.games.clear()
-
     rd = MostRecentDay.objects.get(rd_id=0)
     n = rd.day
     prev_day_str = generate_date_string(n-1)
@@ -42,23 +96,23 @@ def day_setup():
     all_games = []
     try:
         curr_res = api_get_games_on_date(current_day_str)['response']
-        next_res = api_get_games_on_date(next_day_str)['response']
+        #next_res = api_get_games_on_date(next_day_str)['response']
         prev_res = api_get_games_on_date(prev_day_str)['response']
-        all_games = curr_res + next_res + prev_res
+        all_games = curr_res + prev_res
+        all_games = sorted(all_games, key=lambda game: game['id'])
     except:
         print("Games api request failed")
     for g in all_games:
         gamme_obj = day_game_update(g)
         gamme_obj.save()
-        gs.games.add(gamme_obj)
-    gs.save()
     rd.day = n + 1
     rd.save()
     return
 
 
 def get_relevant_games():
-    return GameSet.objects.get(name='relevant').games.all()
+    #return GameSet.objects.get(name='relevant').games.all()
+    return Game.objects.all().filter(prediction__isnull=False)
 
 
 # # #initial games loading

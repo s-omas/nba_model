@@ -11,5 +11,6 @@ urlpatterns = [
     path('test/', views.test, name='test'),
     path('model/', views.model_info, name='modelinfo'),
     path('admin-setup/', views.admin_setup, name='admin_setup'),
-    path('admin-update/', views.admin_update, name='admin_update'),
+    path('admin-pull/', views.admin_pull, name='admin_update'),
+    path('admin-predict/', views.admin_predict, name='admin_update'),
 ]

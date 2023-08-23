@@ -29,8 +29,30 @@ class Game(models.Model):
     date = models.DateTimeField()
     location = models.CharField(max_length=100)
     isCompleted = models.BooleanField(default=False)
+    isProcessed = models.BooleanField(default=False)
     prediction = models.ForeignKey(Prediction, on_delete=models.CASCADE, null=True)
     result = models.ForeignKey(Result, on_delete=models.CASCADE, null=True)
+
+    def add_result(self, response_dict):
+        if response_dict['scores']['home']['points'] > response_dict['scores']['visitors']['points']:
+            winner = self.home_team
+            loser = self.away_team
+        else:
+            loser = self.home_team
+            winner = self.away_team
+        winscore = max(response_dict['scores']['home']['points'], response_dict['scores']['visitors']['points'])
+        losscore = min(response_dict['scores']['home']['points'], response_dict['scores']['visitors']['points'])
+
+        result = Result.objects.create(
+            winner=winner, 
+            loser=loser, 
+            winner_score=winscore, 
+            loser_score=losscore
+        )
+        self.result = result
+        self.isCompleted = True
+        self.save()
+        
 
 class Schedule(models.Model):
     name = models.CharField(max_length=50)

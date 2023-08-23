@@ -15,7 +15,11 @@ def simulate_elo_with_sampling(mean_a, std_a, mean_b, std_b, num_iterations=1000
         rating_player_b = random.gauss(mean_b, std_b)
 
         # Calculate Elo win probability using the sampled ratings
-        probability = elo_win_probability(rating_player_a, rating_player_b)
+        #probability = elo_win_probability(rating_player_a, rating_player_b)
+        if rating_player_a > rating_player_b:
+            probability = 1
+        else:
+            probability = 0
         total_probability += probability
 
     average_probability = total_probability / num_iterations
@@ -62,6 +66,8 @@ def update_predictions(games_list):
 
 
 def update_sim(game):
+    if game.isProcessed:
+        return
     k = 40 #rating change factor
     m = 10 #var change factor
 
@@ -75,14 +81,15 @@ def update_sim(game):
     else:
         p = prediction.loser_pct / 100
     
-    print(k * (1 - p))
+    print("rating adjustment: " + str(k * (1 - p)))
 
     winner_sim.rating = winner_sim.rating + k * (1 - p)
     loser_sim.rating = loser_sim.rating + k * (- p)
 
     winner_sim.variance = winner_sim.variance - m * (p - 0.5)
     loser_sim.variance = loser_sim.variance - m * (p - 0.5)
-
+    game.isProcessed = True
+    game.save()
     winner_sim.save()
     loser_sim.save()
     print("here")

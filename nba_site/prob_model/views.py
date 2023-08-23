@@ -83,12 +83,21 @@ def user_is_admin(user):
 @user_passes_test(user_is_admin)
 def admin_setup(request):
     initial_setup()
-    day_setup()
+    predict()
+    #day_setup()
     return HttpResponse("Initial seaason setup completed.")
 
 
 @login_required
 @user_passes_test(user_is_admin)
-def admin_update(request):
-    day_setup()
+def admin_pull(request):
+    pull()
+    predict()
+    return HttpResponse("Day update completed.")
+
+
+@login_required
+@user_passes_test(user_is_admin)
+def admin_predict(request):
+    predict()
     return HttpResponse("Day update completed.")
