@@ -74,7 +74,7 @@ def add_team(team_response):
     new_sim = Sim(
         team = new_team,
         rating = 1000,
-        variance = 200
+        variance = 500
     )
     new_team.save()
     new_schedule.save()

@@ -59,17 +59,20 @@ def make_prediction(game):
 def update_predictions(games_list):
     for g in games_list:
         if not g.prediction:
-            new = make_prediction(g)
-            new.save()
-            g.prediction = new
-            g.save()
+            try:
+                new = make_prediction(g)
+                new.save()
+                g.prediction = new
+                g.save()
+            except:
+                print("makeprediction failed")
 
 
 def update_sim(game):
     if game.isProcessed:
         return
     k = 40 #rating change factor
-    m = 10 #var change factor
+    m = 20 #var change factor
 
     prediction = game.prediction
     result = game.result

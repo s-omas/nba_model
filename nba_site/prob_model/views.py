@@ -4,6 +4,7 @@ from .models import Team, Game, Schedule
 from django.contrib.admin.views.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+import time
 
 # Create your views here.
 
@@ -46,8 +47,12 @@ def game_lookup(request):
     return render(request, 'game_lookup.html', {'game': game, 'all_teams': Team.objects.all()})
 
 def test(request):
-    #test_2022()
-    return redirect("/")
+    for i in range(10):
+        time.sleep(3)
+        pull()
+        predict()
+        save_relevant_games()
+    return HttpResponse("100 day test completed.")
 
 def model_info(request):
     rating_dict = {}
@@ -84,6 +89,7 @@ def user_is_admin(user):
 def admin_setup(request):
     initial_setup()
     predict()
+    save_relevant_games()
     #day_setup()
     return HttpResponse("Initial seaason setup completed.")
 
@@ -93,6 +99,7 @@ def admin_setup(request):
 def admin_pull(request):
     pull()
     predict()
+    save_relevant_games()
     return HttpResponse("Day update completed.")
 
 
