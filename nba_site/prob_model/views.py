@@ -55,30 +55,9 @@ def test(request):
     return HttpResponse("100 day test completed.")
 
 def model_info(request):
-    rating_dict = {}
-    all_teams = Team.objects.all()
-    for team in all_teams:
-        schedule = Schedule.objects.get(team=team)
-        games = schedule.games.filter(prediction__isnull=False)  # Retrieve associated games
-
-        rating_hist = []
-        for game in games:
-            if team == game.home_team:
-                rating_hist.append(game.prediction.home_team_rating)
-            else:
-                rating_hist.append(game.prediction.away_team_rating)
-        rating_dict.update({team.team_name: rating_hist})
-    rating_dict = str(rating_dict)
-
-    sims = Sim.objects.all()
-    sims_dict = {}
-    for s in sims:
-        name = s.team.team_name
-        rtg = s.rating
-        var = s.variance
-        sims_dict.update({name: {'variance': var, 'rating': rtg}})
-    sims_dict = str(sims_dict)
-
+    info = ModelInfo.objects.get(name='5')
+    rating_dict = info.rating_hist
+    sims_dict = info.sim_info
     return render(request, 'model_info.html', {'rating_dict': rating_dict, 'sims_dict': sims_dict, 'all_teams': Team.objects.all()})
 
 def user_is_admin(user):
@@ -90,6 +69,7 @@ def admin_setup(request):
     initial_setup()
     predict()
     save_relevant_games()
+    collect_model_info()
     #day_setup()
     return HttpResponse("Initial seaason setup completed.")
 
@@ -100,6 +80,7 @@ def admin_pull(request):
     pull()
     predict()
     save_relevant_games()
+    collect_model_info()
     return HttpResponse("Day update completed.")
 
 

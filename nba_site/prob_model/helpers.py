@@ -1,6 +1,6 @@
 import pytz
 from dateutil import parser
-from prob_model.models import Team, Game, Schedule, Result, Sim, Prediction, GameSet, MostRecentDay
+from prob_model.models import Team, Game, Schedule, Result, Sim, Prediction, GameSet, MostRecentDay, ModelInfo
 from datetime import datetime, timedelta, time
 from .stats import update_sim, make_prediction
 
@@ -56,6 +56,7 @@ def clean_db():
     Sim.objects.all().delete()
     GameSet.objects.all().delete()
     MostRecentDay.objects.all().delete()
+    ModelInfo.objects.all().delete()
 
 
 #add team and associated items to db: Team, Sim, Schedule
@@ -202,3 +203,37 @@ def is_before_8am(dt_str):
     dt = datetime.fromisoformat(dt_str[:-1])
     eight_am = time(8, 0, 0)
     return dt.time() < eight_am
+
+
+def collect_model_info():
+    rating_dict = {}
+    all_teams = Team.objects.all()
+    for team in all_teams:
+        schedule = Schedule.objects.get(team=team)
+        games = schedule.games.filter(prediction__isnull=False)  # Retrieve associated games
+
+        rating_hist = []
+        for game in games:
+            if team == game.home_team:
+                rating_hist.append(game.prediction.home_team_rating)
+            else:
+                rating_hist.append(game.prediction.away_team_rating)
+        rating_dict.update({team.team_name: rating_hist})
+    sims = Sim.objects.all()
+    sims_dict = {}
+    for s in sims:
+        name = s.team.team_name
+        rtg = s.rating
+        var = s.variance
+        sims_dict.update({name: {'variance': var, 'rating': rtg}})
+
+    ModelInfo.objects.all().delete()
+    info = ModelInfo.objects.create(
+        name='5',
+        rating_hist = rating_dict,
+        sim_info=sims_dict
+    )
+    info.save()
+    
+
+

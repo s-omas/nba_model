@@ -52,7 +52,7 @@ class Game(models.Model):
         self.result = result
         self.isCompleted = True
         self.save()
-        
+
 
 class Schedule(models.Model):
     name = models.CharField(max_length=50)
@@ -81,3 +81,9 @@ class GameSet(models.Model):
 class MostRecentDay(models.Model):
     rd_id = models.IntegerField(default=0)
     day = models.IntegerField()
+
+
+class ModelInfo(models.Model):
+    rating_hist = models.JSONField()
+    sim_info = models.JSONField()
+    name = models.CharField(max_length=2)
