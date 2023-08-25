@@ -2,36 +2,75 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Game Schedule</h2>
     <div class="row">
-        {% for game in games %}
-        <div class="col-md-4 mb-4">
-            <div class="card {% if game.isCompleted %}bg-light{% else %}{% endif %}">
-                <div class="card-body">
+        <div class="col-6 ">
+            <h2>Recent Games:</h2>
+            <div class="row scrollable-column">
+                {% for game in games %}
                     {% if game.isCompleted %}
-                        <h5 class="card-title"><strong>
-                            {{ game.result.winner.team_name }} {{ game.result.winner_score }}</strong> - 
-                            {{ game.result.loser.team_name }} {{ game.result.loser_score }}
-                        </h5>
-                    {% else %}
-                        <h5 class="card-title">{{ game.home_team.team_name }} vs. {{ game.away_team.team_name }}</h5>
+                    <div class="col-md-12 mb-4">
+                        <div class="card {% if game.isCompleted %}bg-light{% else %}{% endif %}">
+                            <div class="card-body">
+                                {% if game.isCompleted %}
+                                    <h5 class="card-title"><strong>
+                                        {{ game.result.winner.team_name }} {{ game.result.winner_score }}</strong> - 
+                                        {{ game.result.loser.team_name }} {{ game.result.loser_score }}
+                                    </h5>
+                                {% else %}
+                                    <h5 class="card-title">{{ game.home_team.team_name }} vs. {{ game.away_team.team_name }}</h5>
+                                {% endif %}
+                                <p class="card-text"><strong>Home Team:</strong> <a href="/team_lookup?id={{game.home_team.team_id}}">
+                                    {{ game.home_team.team_name }}
+                                </a></p>
+                                <p class="card-text"><strong>Away Team:</strong> <a href="/team_lookup?id={{game.away_team.team_id}}">
+                                    {{ game.away_team.team_name }}
+                                </a></p>
+                                <p class="card-text"><strong>Date:</strong> {{ game.date }}</p>
+                                <p class="card-text"><strong>Location:</strong> {{ game.location }}</p>
+                                
+                                
+                                <a href="/game_lookup?id={{game.game_id}}">View Details</a>
+                            </div>
+                        </div>
+                    </div>
                     {% endif %}
-                    <p class="card-text"><strong>Home Team:</strong> <a href="/team_lookup?id={{game.home_team.team_id}}">
-                        {{ game.home_team.team_name }}
-                    </a></p>
-                    <p class="card-text"><strong>Away Team:</strong> <a href="/team_lookup?id={{game.away_team.team_id}}">
-                        {{ game.away_team.team_name }}
-                    </a></p>
-                    <p class="card-text"><strong>Date:</strong> {{ game.date }}</p>
-                    <p class="card-text"><strong>Location:</strong> {{ game.location }}</p>
-                    
-                    
-                    <a href="/game_lookup?id={{game.game_id}}">View Details</a>
-                </div>
+                {% endfor %}
             </div>
         </div>
-        
-        {% endfor %}
+        <div class="col-6 ">
+            <h2>Upcoming Games:</h2>
+            <div class="row scrollable-column">
+                {% for game in games %}
+                    {% if not game.isCompleted %}
+                    <div class="col-md-12 mb-4">
+                        <div class="card {% if game.isCompleted %}bg-light{% else %}{% endif %}">
+                            <div class="card-body">
+                                {% if game.isCompleted %}
+                                    <h5 class="card-title"><strong>
+                                        {{ game.result.winner.team_name }} {{ game.result.winner_score }}</strong> - 
+                                        {{ game.result.loser.team_name }} {{ game.result.loser_score }}
+                                    </h5>
+                                {% else %}
+                                    <h5 class="card-title">{{ game.home_team.team_name }} vs. {{ game.away_team.team_name }}</h5>
+                                {% endif %}
+                                <p class="card-text"><strong>Home Team:</strong> <a href="/team_lookup?id={{game.home_team.team_id}}">
+                                    {{ game.home_team.team_name }}
+                                </a></p>
+                                <p class="card-text"><strong>Away Team:</strong> <a href="/team_lookup?id={{game.away_team.team_id}}">
+                                    {{ game.away_team.team_name }}
+                                </a></p>
+                                <p class="card-text"><strong>Date:</strong> {{ game.date }}</p>
+                                <p class="card-text"><strong>Location:</strong> {{ game.location }}</p>
+                                
+                                
+                                <a href="/game_lookup?id={{game.game_id}}">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

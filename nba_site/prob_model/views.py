@@ -47,11 +47,12 @@ def game_lookup(request):
     return render(request, 'game_lookup.html', {'game': game, 'all_teams': Team.objects.all()})
 
 def test(request):
-    for i in range(10):
-        time.sleep(3)
+    for i in range(20):
+        time.sleep(2.5)
         pull()
         predict()
         save_relevant_games()
+        collect_model_info()
     return HttpResponse("100 day test completed.")
 
 def model_info(request):
@@ -70,7 +71,6 @@ def admin_setup(request):
     predict()
     save_relevant_games()
     collect_model_info()
-    #day_setup()
     return HttpResponse("Initial seaason setup completed.")
 
 
