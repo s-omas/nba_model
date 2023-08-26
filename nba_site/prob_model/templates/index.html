@@ -11,59 +11,51 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-3">
-                <div class="sticky-top d-flex flex-column justify-content-center align-items-center"> <!-- Added d-flex, flex-column, justify-content-center, and align-items-center classes -->
-                  <ul class="nav flex-column">
-                    <li class="nav-item">
-                      <a class="nav-link active" href="/games">
-                        <h3>Games</h3>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">
-                        <h3>Teams</h3>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="/model">
-                        <h3>Predictions</h3>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">
-                        <h3>Stats</h3>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">
-                        <h3>Support</h3>
-                      </a>
-                    </li>
-                  </ul>
+    <div class="container pd-4 bg-light">
+        <div class="row h-25 sticky-top bg-white">
+            <div class="row">
+                <div class="col-3">
+                    <h1 class="display-1 pl-4"><a href="/" class="text-reset text-decoration-none">bballstats</a></h1>
                 </div>
-            </nav>
-              
-            
-            <!-- Main Content -->
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4", id="scrollable-container">
-                <div class="container bg-white sticky-top" id="jumbotron-content">
-                    <div class="jumbotron">
-                      <h1 class="display-1"><a href="/" class="text-reset text-decoration-none">bballstats</a></h1>
-                      <p>NBA games, stats, and predictions updated daily.</p>
-                    </div>
-                  </div>
-                {% block content %}{% endblock %}
+                <div class="col mt-4">
+                    <nav class="navbar navbar-expand-lg navbar-light p-3">
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            
+                            <li class="nav-item" >
+                            <a class="nav-link" id="gamesLink" href="/games"><h3>Games</h3></a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" id="teamsLink" href="#"><h3>Teams</h3></a>
+                            </li>
+                            <li class="nav-item"  >
+                            <a class="nav-link" id="predictionsLink" href="/model"><h3>Predictions</h3></a>
+                            </li>
+                            <li class="nav-item" >
+                            <a class="nav-link" id="statsLink" href="#"><h3>Stats</h3></a>
+                            </li>
+                            <li class="nav-item"  >
+                            <a class="nav-link" id="supportLink" href="#"><h3>Support</h3></a>
+                            </li>
+                        </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="row h-70">
+            <main role="main" class="row ml-4", id="scrollable-container">
+                <div class="ml-6">{% block content %}{% endblock %}</div>
             </main>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-light py-4">
+    <footer class="bg-light py-4 h-5">
         <div class="container text-center">
             <p>&copy; 2023 Simon Thomas. All rights reserved.</p>
         </div>
