@@ -45,8 +45,8 @@ def make_prediction(game):
     new_pred = Prediction(
         expected_winner = win,
         expected_loser = los,
-        winner_pct = 100 * pct,
-        loser_pct = 100 * (1 - pct),
+        winner_pct = round(100 * pct, 1),
+        loser_pct = round(100 * (1 - pct), 1),
         home_team_rating = home_rtg,
         home_team_variance = home_var,
         away_team_rating = away_rtg,

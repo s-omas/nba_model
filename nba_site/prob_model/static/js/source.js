@@ -27,3 +27,5 @@ else if (currentPath === '/stats') {
     const gamesElement = document.getElementById('statsLink');
     gamesElement.classList.add('active');
 }
+
+

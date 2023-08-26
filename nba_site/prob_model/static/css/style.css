@@ -3,6 +3,11 @@
     overflow-y: auto;
   }
 
+.scrollable-column-mini {
+    height: 40vh; /* Adjust the desired height */
+    overflow-y: auto;
+  }
+
 /* Align navbar items at the bottom */
 .navbar-nav {
     display: flex;
@@ -14,6 +19,6 @@
   .navbar-nav .nav-item {
     margin-bottom: auto; /* Push the items to the bottom */
   }
-  
+
 
   

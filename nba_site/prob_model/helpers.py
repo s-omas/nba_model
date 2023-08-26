@@ -223,8 +223,8 @@ def collect_model_info():
     sims_dict = {}
     for s in sims:
         name = s.team.team_name
-        rtg = s.rating
-        var = s.variance
+        rtg = round(s.rating, 1)
+        var = round(s.variance, 1)
         sims_dict.update({name: {'variance': var, 'rating': rtg}})
 
     ModelInfo.objects.all().delete()
